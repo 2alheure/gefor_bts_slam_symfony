@@ -6,6 +6,21 @@
 		<title>Document</title>
 	</head>
 	<body>
+		<h1>{{ titre }}</h1>
 		<p>Hello, World!</p>
+		<p>Nous sommes le
+			{{ date }}.</p>
+
+		{% if n > 0 %}
+			{% for i in 1..n %}
+				<p>J'affiche un paragraphe : § n°
+					{{ i }}
+					!</p>
+			{% endfor %}
+		{% else %}
+			<p>Il n'y a pas de paragraphe à afficher.</p>
+		{% endif %}
+
+		{# Commentaire #}
 	</body>
 </html>
