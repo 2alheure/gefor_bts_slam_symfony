@@ -33,8 +33,11 @@
 					</td>
 					<td>
 						<a href="{{ path('app_pokemon_details', { pokemon: pokemon.id }) }}">Voir</a>
-						<a href="{{ path('app_pokemon_update', { pokemon: pokemon.id }) }}">Modifier</a>
-						<a href="{{ path('app_pokemon_delete', { pokemon: pokemon.id }) }}">Supprimer</a>
+
+						{% if is_granted('ROLE_ADMIN') %}
+							<a href="{{ path('app_pokemon_update', { pokemon: pokemon.id }) }}">Modifier</a>
+							<a href="{{ path('app_pokemon_delete', { pokemon: pokemon.id }) }}">Supprimer</a>
+						{% endif %}
 					</td>
 				</tr>
 			{% else %}

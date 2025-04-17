@@ -7,6 +7,20 @@
 	</head>
 	<body>
 		<h1>{{ titre }}</h1>
+
+		{% if is_granted('ROLE_USER') %}
+			<p>
+				Bonjour,
+				{{ app.user.email }}
+				!
+			</p>
+		{% endif %}
+
+		{% if is_granted('ROLE_ADMIN') %}
+			<p>Bonjour, Maître. Que vous êtes beau aujourd'hui !</p>
+		{% endif %}
+
+
 		<p>Hello, World!</p>
 		<p>Nous sommes le
 			{{ date }}.</p>

@@ -11,7 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class PokemonCrudController extends AbstractController {
     public function __construct(private PokemonRepository $pokemonRepository) {
@@ -27,6 +29,10 @@ final class PokemonCrudController extends AbstractController {
 
     #[Route('/pokemons/create', name: 'app_pokemon_create')]
     public function create(EntityManagerInterface $em, Request $request): Response {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedHttpException('Vous n\'avez pas les droits nécessaires pour créer un Pokémon.');
+        }
+
         $pokemon = new Pokemon;
 
         $form = $this->createForm(PokemonType::class, $pokemon);
@@ -57,6 +63,8 @@ final class PokemonCrudController extends AbstractController {
 
     #[Route('/pokemons/{pokemon}/update', name: 'app_pokemon_update')]
     public function update(Pokemon $pokemon, EntityManagerInterface $em, Request $request): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(PokemonType::class, $pokemon);
         $form->handleRequest($request);
 
@@ -72,6 +80,7 @@ final class PokemonCrudController extends AbstractController {
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/pokemons/{pokemon}/delete', name: 'app_pokemon_delete')]
     public function delete(Pokemon $pokemon, EntityManagerInterface $em): Response {
         $em->remove($pokemon);
