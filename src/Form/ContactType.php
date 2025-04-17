@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ContactType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options): void {
@@ -19,6 +20,11 @@ class ContactType extends AbstractType {
                 'label' => 'Sujet',
                 'attr' => [
                     'placeholder' => 'Entrez le sujet de votre message',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Veuillez entrer un sujet.',
+                    ]),
                 ],
             ])
             ->add('date', DateType::class, [
