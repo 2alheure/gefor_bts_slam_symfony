@@ -3,13 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Pokemon;
-use App\Repository\PokemonRepository;
+use App\Form\PokemonType;
 use App\Repository\TypeRepository;
+use App\Repository\PokemonRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class PokemonCrudController extends AbstractController {
     public function __construct(private PokemonRepository $pokemonRepository) {
@@ -24,22 +26,22 @@ final class PokemonCrudController extends AbstractController {
     }
 
     #[Route('/pokemons/create', name: 'app_pokemon_create')]
-    public function create(EntityManagerInterface $em, TypeRepository $typeRepository): Response {
-        $salameche = new Pokemon;
-        $salameche->setNom('Salameche');
-        $salameche->setNum(4);
-        $salameche->setDescription('Salamèche est un Pokémon de type Feu. Il est le Pokémon de départ de type Feu dans la région de Kanto.');
-        $salameche->setZone('Kanto');
-        $salameche->setImg('https://www.pokepedia.fr/images/thumb/5/5c/004Salam%C3%A8che.png/250px-004Salam%C3%A8che.png');
-        $salameche->setType1(
-            $typeRepository->findOneByNom('Feu')
-        );
-        // $salameche->setType2($this->getDoctrine()->getRepository(Type::class)->findOneBy(['nom' => 'Vol']));
+    public function create(EntityManagerInterface $em, Request $request): Response {
+        $pokemon = new Pokemon;
 
-        $em->persist($salameche);
-        $em->flush();
-        $this->addFlash('success', 'Le Pokémon a été créé avec succès !');
-        return $this->redirectToRoute('app_pokemon_list');
+        $form = $this->createForm(PokemonType::class, $pokemon);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($pokemon);
+            $em->flush();
+            $this->addFlash('success', 'Le Pokémon a été créé avec succès !');
+            return $this->redirectToRoute('app_pokemon_list');
+        }
+
+        return $this->render('pokemon_crud/form.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route('/pokemons/{pokemon}', name: 'app_pokemon_details')]
@@ -53,19 +55,21 @@ final class PokemonCrudController extends AbstractController {
         ]);
     }
 
-    #[Route('/pokemons/{id}/update', name: 'app_pokemon_update')]
-    public function update(EntityManagerInterface $em, TypeRepository $tr): Response {
-        $bulbisaur = $this->pokemonRepository->findOneByNum(1);
-        if (!$bulbisaur) {
-            throw new NotFoundHttpException('Le Pokémon n\'existe pas.');
+    #[Route('/pokemons/{pokemon}/update', name: 'app_pokemon_update')]
+    public function update(Pokemon $pokemon, EntityManagerInterface $em, Request $request): Response {
+        $form = $this->createForm(PokemonType::class, $pokemon);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($pokemon);
+            $em->flush();
+            $this->addFlash('success', 'Le Pokémon a été créé avec succès !');
+            return $this->redirectToRoute('app_pokemon_list');
         }
 
-        $bulbisaur->setType1($tr->findOneByNom('Plante'));
-        
-        $em->persist($bulbisaur);
-        $em->flush();
-
-        return $this->redirectToRoute('app_pokemon_list');
+        return $this->render('pokemon_crud/form.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route('/pokemons/{pokemon}/delete', name: 'app_pokemon_delete')]
@@ -74,7 +78,7 @@ final class PokemonCrudController extends AbstractController {
         $em->flush();
 
         $this->addFlash('success', 'Le Pokémon a été supprimé avec succès !');
-        
+
         return $this->redirectToRoute('app_pokemon_list');
     }
 }

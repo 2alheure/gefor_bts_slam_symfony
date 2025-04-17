@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pokémon Form
+{% endblock %}
+
+{% block body %}
+	<h1>Create / Edit Pokémon</h1>
+
+	{{ form(form) }}
+
+    <a href="{{ path('app_pokemon_list') }}" class="btn btn-secondary">Revenir à la liste</a>
+{% endblock %}

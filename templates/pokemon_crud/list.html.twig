@@ -6,10 +6,14 @@
 {% block body %}
 	<h1>Liste des Pokémons</h1>
 
-	<table>
+	<p>
+		<a href="{{ path('app_pokemon_create') }}">Ajouter un pokémon</a>
+	</p>
+
+	<table class="table">
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th>Numéro</th>
 				<th>Nom</th>
 				<th>Type</th>
 				<th>Actions</th>
@@ -18,7 +22,7 @@
 		<tbody>
 			{% for pokemon in pokemons %}
 				<tr>
-					<td>{{ pokemon.id }}</td>
+					<td>{{ pokemon.num }}</td>
 					<td>{{ pokemon.nom }}</td>
 					<td>
 						{{ pokemon.type1.nom }}
@@ -28,9 +32,9 @@
 						{% endif %}
 					</td>
 					<td>
-						<a href="{{ path('app_pokemon_details', { id: pokemon.id }) }}">Voir</a>
-						<a href="{{ path('app_pokemon_update', { id: pokemon.id }) }}">Modifier</a>
-						<a href="{{ path('app_pokemon_delete', { id: pokemon.id }) }}">Supprimer</a>
+						<a href="{{ path('app_pokemon_details', { pokemon: pokemon.id }) }}">Voir</a>
+						<a href="{{ path('app_pokemon_update', { pokemon: pokemon.id }) }}">Modifier</a>
+						<a href="{{ path('app_pokemon_delete', { pokemon: pokemon.id }) }}">Supprimer</a>
 					</td>
 				</tr>
 			{% else %}
