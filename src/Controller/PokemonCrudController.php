@@ -82,7 +82,11 @@ final class PokemonCrudController extends AbstractController {
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/pokemons/{pokemon}/delete', name: 'app_pokemon_delete')]
-    public function delete(Pokemon $pokemon, EntityManagerInterface $em): Response {
+    public function delete(Pokemon $pokemon, EntityManagerInterface $em, Request $request): Response {
+        if (!$this->isCsrfTokenValid('delete-pokemon-' . $pokemon->getId(), $request->query->get('csrf'))) {
+            throw new AccessDeniedHttpException('Le token CSRF est invalide.');
+        }
+
         $em->remove($pokemon);
         $em->flush();
 
