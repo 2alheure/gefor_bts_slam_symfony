@@ -1,26 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails du Pokémon{% endblock %}
+{% block title %}Détails du Pokémon
+{% endblock %}
 
 {% block body %}
-    <h1>Détails du Pokémon</h1>
+	<h1>Détails du Pokémon</h1>
 
-    <div>
-        <strong>Nom :</strong> {{ pokemon.nom }}
-    </div>
-    <div>
-        <strong>Type :</strong> {{ pokemon.type1.nom }}
-    </div>
-    {% if pokemon.type2 is not null %}
-        <div>
-            <strong>Type 2 :</strong> {{ pokemon.type2.nom }}
-        </div>
-    {% endif %}
-    <div>
-        <strong>Description :</strong> {{ pokemon.description }}
-    </div>
+	<div>
+		<strong>Nom :</strong>
+		{{ pokemon.nom }}
+	</div>
+	<div>
+		<strong>Type :</strong>
+		{{ pokemon.type1.nom }}
+	</div>
+	{% if pokemon.type2 is not null %}
+		<div>
+			<strong>Type 2 :</strong>
+			{{ pokemon.type2.nom }}
+		</div>
+	{% endif %}
+	<div>
+		<strong>Description :</strong>
+		{{ pokemon.description }}
+	</div>
 
-    <a href="{{ path('app_pokemon_list') }}">Retour à la liste</a>
-    <a href="{{ path('app_pokemon_update', { id: pokemon.id }) }}">Modifier</a>
-
+	<a href="{{ path('app_pokemon_list') }}">Retour à la liste</a>
+	{% if is_granted('ROLE_ADMIN') %}
+		<a href="{{ path('app_pokemon_update', { pokemon: pokemon.id }) }}">Modifier</a>
+	{% endif %}
 {% endblock %}
