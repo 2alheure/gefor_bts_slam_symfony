@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PokemonCrudController!
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des Pokémons</h1>
+
+	<table>
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Nom</th>
+				<th>Type</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for pokemon in pokemons %}
+				<tr>
+					<td>{{ pokemon.id }}</td>
+					<td>{{ pokemon.nom }}</td>
+					<td>
+						{{ pokemon.type1.nom }}
+						{% if pokemon.type2 is not null %}
+							/
+							{{ pokemon.type2.nom }}
+						{% endif %}
+					</td>
+					<td>
+						<a href="{{ path('app_pokemon_details', { id: pokemon.id }) }}">Voir</a>
+						<a href="{{ path('app_pokemon_update', { id: pokemon.id }) }}">Modifier</a>
+						<a href="{{ path('app_pokemon_delete', { id: pokemon.id }) }}">Supprimer</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="4">Aucun Pokémon trouvé.</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
