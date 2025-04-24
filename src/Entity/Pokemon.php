@@ -7,8 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PokemonRepository::class)]
-class Pokemon
-{
+class Pokemon implements \JsonSerializable {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,90 +35,88 @@ class Pokemon
     #[ORM\ManyToOne]
     private ?Type $type2 = null;
 
-    public function getId(): ?int
-    {
+    public function jsonSerialize(): mixed {
+        return [
+            'id' => $this->getId(),
+            'nom' => $this->getNom(),
+            'num' => $this->getNum(),
+            'description' => $this->getDescription(),
+            'zone' => $this->getZone(),
+            'img' => $this->getImg(),
+            'type1' => $this->getType1()->getNom(),
+            'type2' => $this->getType2() ? $this->getType2()->getNom() : null,
+        ];
+    }
+
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getNom(): ?string
-    {
+    public function getNom(): ?string {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
-    {
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getNum(): ?int
-    {
+    public function getNum(): ?int {
         return $this->num;
     }
 
-    public function setNum(int $num): static
-    {
+    public function setNum(int $num): static {
         $this->num = $num;
 
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
+    public function getDescription(): ?string {
         return $this->description;
     }
 
-    public function setDescription(string $description): static
-    {
+    public function setDescription(string $description): static {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getZone(): ?string
-    {
+    public function getZone(): ?string {
         return $this->zone;
     }
 
-    public function setZone(?string $zone): static
-    {
+    public function setZone(?string $zone): static {
         $this->zone = $zone;
 
         return $this;
     }
 
-    public function getImg(): ?string
-    {
+    public function getImg(): ?string {
         return $this->img;
     }
 
-    public function setImg(?string $img): static
-    {
+    public function setImg(?string $img): static {
         $this->img = $img;
 
         return $this;
     }
 
-    public function getType1(): ?Type
-    {
+    public function getType1(): ?Type {
         return $this->type1;
     }
 
-    public function setType1(?Type $type1): static
-    {
+    public function setType1(?Type $type1): static {
         $this->type1 = $type1;
 
         return $this;
     }
 
-    public function getType2(): ?Type
-    {
+    public function getType2(): ?Type {
         return $this->type2;
     }
 
-    public function setType2(?Type $type2): static
-    {
+    public function setType2(?Type $type2): static {
         $this->type2 = $type2;
 
         return $this;
